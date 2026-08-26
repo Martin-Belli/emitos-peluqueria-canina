@@ -1,82 +1,45 @@
-# Pet Shop - Catálogo V1
+# Emitos Peluqueria Canina — V1.1
 
-Versión inicial de catálogo online sin backend.
+Hardening básico manteniendo la misma apariencia y funcionamiento de la V1.
 
-## Incluye
+## Seguridad incorporada
 
-- Catálogo responsive
-- Filtro por categorías
-- Buscador
-- Carrito
-- Cantidades
-- Total
-- Persistencia temporal del carrito en el navegador
-- Envío del pedido por WhatsApp
-- Sin base de datos
-- Sin login
-- Sin pagos online
+- CSP básica.
+- Referrer Policy.
+- Recursos externos forzados a HTTPS.
+- `object-src 'none'`.
+- `base-uri 'self'`.
+- Inputs limitados y normalizados.
+- Carrito de `localStorage` validado antes de usarse.
+- Cantidad máxima por producto.
+- `CONFIG` y `PRODUCTS` congelados mediante `Object.freeze`.
+- El mensaje de WhatsApp se reconstruye desde `PRODUCTS`.
+- El precio visible en el HTML nunca se toma como fuente del pedido.
+- `noopener,noreferrer`.
+- Las imágenes externas no envían referrer.
 
-## Archivos
+## Imágenes
 
-- `index.html`: estructura de la página
-- `styles.css`: estilos
-- `productos.js`: configuración del negocio y catálogo
-- `app.js`: lógica del catálogo, carrito y WhatsApp
+Continúan permitidas ambas opciones.
 
-## Qué editar primero
+Externa:
 
-Abrir `productos.js`.
+    image: "https://sitio.com/producto.jpg"
 
-### Nombre del negocio
+Local en el repo:
 
-Cambiar:
+    image: "images/producto.jpg"
 
-    shopName: "Mi Pet Shop"
+Más adelante puede cambiarse la CSP a:
 
-### WhatsApp
+    img-src 'self' data:
 
-Usar formato internacional sin `+`, espacios ni guiones.
+para bloquear imágenes externas.
 
-Ejemplo para Argentina:
+## Límite de esta arquitectura
 
-    whatsappNumber: "5491123456789"
+Sin backend no existe una validación inviolable de precios.
 
-### Productos
+Modificar únicamente el HTML visible ya no altera el mensaje generado, pero un usuario avanzado aún puede modificar JavaScript en su propio navegador.
 
-Cada producto tiene:
-
-- id
-- name
-- category
-- price
-- description
-- image
-
-Los precios se escriben como número, sin `$` ni puntos:
-
-    price: 25000
-
-## Cómo probarlo
-
-Podés abrir `index.html` directamente en un navegador.
-
-Para desarrollo es mejor usar un servidor local, por ejemplo la extensión "Live Server" de VS Code.
-
-## Publicación
-
-Esta versión puede publicarse como sitio estático en:
-
-- GitHub Pages
-- Cloudflare Pages
-- Netlify
-- Vercel
-
-HTTPS puede obtenerse automáticamente con esos servicios.
-
-## Seguridad de esta V1
-
-No hay backend ni base de datos. El carrito vive en el navegador del cliente.
-
-El pedido se envía por WhatsApp y debe ser confirmado manualmente.
-
-No guardar claves, tokens, contraseñas o secretos dentro de estos archivos.
+Por eso, el pedido y el precio final deben seguir confirmándose por WhatsApp.
